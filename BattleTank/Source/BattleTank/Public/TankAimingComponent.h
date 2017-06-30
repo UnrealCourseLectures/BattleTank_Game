@@ -16,6 +16,7 @@ enum class EFiringState : uint8
 //Forward Declaration
 class UTankBarrel; 
 class UTankTurret;
+class AProjectile;
 
 //Holds Barrel's properties and Elevate method
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -32,6 +33,9 @@ public:
 		
 	//Event Called in TankPlayerController.cpp to aim at crosshair
 	void AimAt(FVector OutHitLocation);
+
+	UFUNCTION(BlueprintCallable, Category = "Firing")
+	void Fire(); 
 	
 protected:
 	UPROPERTY(BlueprintReadOnly)
@@ -45,4 +49,12 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Fire")
 	float FiringSpeed = 4000.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Fire") 
+	float ReloadTimeinSeconds = 3;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+	TSubclassOf<AProjectile> ProjectileBlueprint;
+
+	double LastFireTime = 0; 
 };
