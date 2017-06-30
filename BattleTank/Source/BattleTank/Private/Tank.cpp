@@ -1,8 +1,7 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright B.A.Y. Joy-Works 2017
 
 #include "BattleTank.h"
 #include "TankAimingComponent.h"
-#include "TankMovementComponent.h"
 #include "TankBarrel.h"
 #include "Projectile.h"
 #include "Tank.h"
@@ -21,24 +20,21 @@ ATank::ATank()
 void ATank::BeginPlay()
 {
 	Super::BeginPlay();
-}
-
-// Called to bind functionality to input
-void ATank::SetupPlayerInputComponent(class UInputComponent* InputComponent)
-{
-	Super::SetupPlayerInputComponent(InputComponent);
+	TankAimingComponent = FindComponentByClass<UTankAimingComponent>();
 }
 
 void ATank::AimAt(FVector OutHitLocation)
 {
-	if (!TankAimingComponent) { return; }
+	if (!ensure(TankAimingComponent)) { return; }
 	TankAimingComponent->AimAt(OutHitLocation, FiringSpeed);
 }
 
 void ATank::Fire()
 {
+	if (!Barrel) { return; }
+
 	bool isReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeinSeconds;
-	if (Barrel && isReloaded) 
+	if (isReloaded) 
 	{
 		FVector BarrelLocation = Barrel->GetSocketLocation(FName("Projectile"));
 		FRotator BarrelRotation = Barrel->GetSocketRotation(FName("Projectile"));

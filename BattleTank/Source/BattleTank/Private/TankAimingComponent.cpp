@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright B.A.Y. Joy-Works 2017
 
 #include "BattleTank.h"
 #include "TankBarrel.h"
@@ -25,7 +25,7 @@ void UTankAimingComponent::Initialise(UTankBarrel* BarrelToSet, UTankTurret* Tur
 void UTankAimingComponent::AimAt(FVector OutHitLocation, float FiringSpeed)
 {
 	if (!Barrel) { return; }
-
+	
 	// Declaring Variables
 	FVector OutLaunchVelocity;
 	FVector StartLocation = Barrel->GetSocketLocation(FName("Projectile"));
