@@ -6,7 +6,6 @@
 #include "Tank.generated.h"
 
 //Forward Declarations
-class UTankAimingComponent;
 class UTankBarrel; 
 class UTankTurret;
 class AProjectile;
@@ -22,13 +21,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Firing")
 	void Fire();
-
-	//Event Called in TankPlayerController.cpp to aim at crosshair
-	void AimAt(FVector OutHitLocation);
-
-protected:
-	UPROPERTY(BlueprintReadOnly)
-	UTankAimingComponent* TankAimingComponent = nullptr;
 
 private:
 	// Sets default values for this pawn's properties

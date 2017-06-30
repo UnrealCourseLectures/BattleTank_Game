@@ -22,7 +22,7 @@ void UTankAimingComponent::Initialise(UTankBarrel* BarrelToSet, UTankTurret* Tur
 	Turret = TurretToSet;
 }
 
-void UTankAimingComponent::AimAt(FVector OutHitLocation, float FiringSpeed)
+void UTankAimingComponent::AimAt(FVector OutHitLocation)
 {
 	if (!Barrel) { return; }
 	

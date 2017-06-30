@@ -30,7 +30,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Setup")
 	void Initialise(UTankBarrel* BarrelToSet, UTankTurret* TurretToSet);
 		
-	void AimAt(FVector OutHitLocation, float FiringSpeed);
+	//Event Called in TankPlayerController.cpp to aim at crosshair
+	void AimAt(FVector OutHitLocation);
 	
 protected:
 	UPROPERTY(BlueprintReadOnly)
@@ -41,4 +42,7 @@ private:
 	UTankTurret* Turret = nullptr;
 
 	void MoveTurretTowards(FVector AimDirection);
+
+	UPROPERTY(EditDefaultsOnly, Category = "Fire")
+	float FiringSpeed = 4000.f;
 };
