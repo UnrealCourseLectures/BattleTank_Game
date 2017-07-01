@@ -20,12 +20,17 @@ UTankAimingComponent::UTankAimingComponent()
 
 void UTankAimingComponent::BeginPlay()
 {
+	Super::BeginPlay();
 	LastFireTime = FPlatformTime::Seconds();
 }
 
 void UTankAimingComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
 {
-	if ((FPlatformTime::Seconds() - LastFireTime) < ReloadTimeinSeconds)
+	if (AmmoCount <= 0)
+	{
+		FiringState = EFiringState::OutOfAmmo;
+	}
+	else if ((FPlatformTime::Seconds() - LastFireTime) < ReloadTimeinSeconds)
 	{
 		FiringState = EFiringState::Reloading;
 	}
@@ -37,6 +42,11 @@ void UTankAimingComponent::TickComponent(float DeltaTime, enum ELevelTick TickTy
 	{
 		FiringState = EFiringState::Locked;
 	}
+}
+
+int UTankAimingComponent::GetAmmoCount() const
+{
+	return AmmoCount;
 }
 
 void UTankAimingComponent::Initialise(UTankBarrel* BarrelToSet, UTankTurret* TurretToSet)
@@ -52,9 +62,14 @@ bool UTankAimingComponent::IsBarrelMoving()
 	return !BarrelForward.Equals(AimDirection, 0.01);
 }
 
+EFiringState UTankAimingComponent::GetFiringState() const
+{
+	return FiringState;
+}
+
 void UTankAimingComponent::Fire()
 {
-	if (FiringState != EFiringState::Reloading)
+	if (FiringState == EFiringState::Locked || FiringState == EFiringState::Aiming)
 	{
 		if (!ensure(Barrel)) { return; }
 		if (!ensure(ProjectileBlueprint)) { return; }
@@ -64,6 +79,7 @@ void UTankAimingComponent::Fire()
 
 		Projectile->LaunchProjectile(FiringSpeed);
 		LastFireTime = FPlatformTime::Seconds();
+		AmmoCount--;
 	}
 }
 
@@ -107,10 +123,15 @@ void UTankAimingComponent::MoveTurretTowards(FVector AimDirection)
 	auto BarrelRotator = Barrel->GetForwardVector().Rotation();
 	auto AimAsRotator = AimDirection.Rotation();
 	auto DeltaRotator = AimAsRotator - BarrelRotator;
-	Barrel->Elevate(DeltaRotator.Pitch); 
 
-	//Work-out difference between current turret rotation, and AimDirection
-	auto TurretRotator = Turret->GetForwardVector().Rotation();
-	auto DeltaTurretRotation = AimAsRotator - TurretRotator;
-	Turret->MoveTurret(DeltaTurretRotation.Yaw);
+	//Always yaw the shortest route
+	Barrel->Elevate(DeltaRotator.Pitch); 
+	if ((FMath::Abs(DeltaRotator.Yaw)) < 180)
+	{
+		Turret->MoveTurret(DeltaRotator.Yaw);
+	}
+	else
+	{
+		Turret->MoveTurret(-DeltaRotator.Yaw);
+	}
 }
