@@ -39,7 +39,7 @@ public:
 	void Fire(); 
 
 	UFUNCTION(BlueprintCallable, Category = "Fire")
-	int GetAmmoCount() const;
+	int32 GetAmmoCount() const;
 
 	bool IsBarrelMoving();
 
@@ -59,18 +59,19 @@ private:
 
 	void MoveTurretTowards(FVector AimDirection);
 
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+	TSubclassOf<AProjectile> ProjectileBlueprint;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Fire")
 	float FiringSpeed = 4000.f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Fire") 
 	float ReloadTimeinSeconds = 3;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-	TSubclassOf<AProjectile> ProjectileBlueprint;
+	UPROPERTY(EditDefaultsOnly, Category = "Fire")
+	int32 AmmoCount = 3;
 
 	double LastFireTime = 0;
-
-	int AmmoCount = 3;
 
 	FVector AimDirection;
 };
